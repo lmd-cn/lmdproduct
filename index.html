@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>星耀 L7 ｜ 纯电智能轿跑</title>
+<style>
+  :root {
+    --car-color: #c8102e;
+    --car-shade: #8f0b20;
+    --bg: #0b0d12;
+    --bg-soft: #14171f;
+    --text: #e9ecf3;
+    --muted: #99a1b3;
+    --line: rgba(255, 255, 255, .1);
+    --accent: #4c8dff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Segoe UI", "Microsoft YaHei", system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { width: min(1160px, 92vw); margin: 0 auto; }
+
+  /* 顶部导航 */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    backdrop-filter: blur(12px);
+    background: rgba(11, 13, 18, .78);
+    border-bottom: 1px solid var(--line);
+  }
+
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    height: 68px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    font-size: 15px;
+  }
+
+  .brand span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--car-color);
+    box-shadow: 0 0 12px var(--car-color);
+  }
+
+  nav ul { display: flex; gap: 28px; list-style: none; }
+
+  nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    transition: color .2s;
+  }
+
+  nav a:hover { color: var(--text); }
+
+  .btn {
+    display: inline-block;
+    padding: 12px 26px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform .15s, opacity .2s, background .2s;
+  }
+
+  .btn:hover { transform: translateY(-2px); }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-ghost { border-color: var(--line); color: var(--text); background: transparent; }
+  .btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+
+  /* 首屏 */
+  .hero {
+    padding: 72px 0 40px;
+    background:
+      radial-gradient(900px 420px at 78% 8%, color-mix(in srgb, var(--car-color) 26%, transparent), transparent 70%),
+      linear-gradient(180deg, var(--bg-soft), var(--bg));
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.25fr;
+    gap: 48px;
+    align-items: center;
+  }
+
+  .eyebrow {
+    display: inline-block;
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: var(--accent);
+    border: 1px solid rgba(76, 141, 255, .35);
+    border-radius: 999px;
+    padding: 5px 14px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-size: clamp(34px, 4.6vw, 56px);
+    line-height: 1.12;
+    letter-spacing: -1px;
+  }
+
+  h1 em {
+    font-style: normal;
+    background: linear-gradient(90deg, var(--car-color), #ff9a6a);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .lead { color: var(--muted); margin: 20px 0 28px; max-width: 42ch; }
+
+  .price { display: flex; align-items: baseline; gap: 12px; margin-bottom: 28px; }
+  .price b { font-size: 34px; letter-spacing: -1px; }
+  .price small { color: var(--muted); }
+
+  .cta { display: flex; flex-wrap: wrap; gap: 14px; }
+
+  /* 车图 */
+  .stage {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 0;
+  }
+
+  .stage::after {
+    content: "";
+    position: absolute;
+    left: 8%;
+    right: 8%;
+    bottom: 36px;
+    height: 26px;
+    background: radial-gradient(ellipse at center, rgba(0, 0, 0, .72), transparent 72%);
+    filter: blur(6px);
+  }
+
+  .car { width: 100%; height: auto; display: block; position: relative; z-index: 1; }
+
+  .car-body { fill: var(--car-color); }
+  .car-shadow { fill: #000; opacity: .28; }
+  .glass { fill: #10131a; opacity: .85; }
+  .rim { fill: #cfd6e6; }
+  .tire { fill: #14161c; }
+  .light { fill: #fff6d8; opacity: .95; }
+  .lamp { fill: var(--car-shade); }
+  .stance { transition: fill .35s ease, filter .35s ease; }
+
+  /* 配色选择 */
+  .swatches {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-top: 26px;
+  }
+
+  .swatches p { font-size: 13px; color: var(--muted); margin-right: 4px; }
+
+  .swatch {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, .18);
+    cursor: pointer;
+    padding: 0;
+    transition: transform .15s, border-color .2s;
+  }
+
+  .swatch:hover { transform: scale(1.1); }
+  .swatch[aria-pressed="true"] { border-color: #fff; }
+
+  /* 通用分区 */
+  section { padding: 76px 0; border-top: 1px solid var(--line); }
+
+  .head { text-align: center; margin-bottom: 44px; }
+  .head h2 { font-size: clamp(24px, 3vw, 34px); letter-spacing: -.5px; }
+  .head p { color: var(--muted); margin-top: 10px; }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+  }
+
+  .card {
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 26px 22px;
+    transition: transform .2s, border-color .2s;
+  }
+
+  .card:hover { transform: translateY(-4px); border-color: rgba(76, 141, 255, .45); }
+  .card .icon { font-size: 24px; }
+  .card h3 { font-size: 16px; margin: 14px 0 8px; }
+  .card p { font-size: 13px; color: var(--muted); }
+
+  /* 参数表 */
+  .specs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .spec { background: var(--bg-soft); padding: 26px 22px; }
+  .spec dt { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+  .spec dd { font-size: 26px; font-weight: 700; letter-spacing: -.5px; }
+  .spec dd span { font-size: 14px; font-weight: 400; color: var(--muted); margin-left: 4px; }
+
+  /* 结尾 */
+  .closing { text-align: center; }
+  .closing h2 { font-size: clamp(24px, 3vw, 36px); margin-bottom: 14px; }
+  .closing p { color: var(--muted); margin-bottom: 30px; }
+
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 26px 0;
+    color: var(--muted);
+    font-size: 13px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-between;
+  }
+
+  @media (max-width: 900px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .stage { order: -1; }
+    nav ul { display: none; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <nav>
+      <div class="brand"><span></span>星耀汽车</div>
+      <ul>
+        <li><a href="#highlights">产品亮点</a></li>
+        <li><a href="#specs">性能参数</a></li>
+        <li><a href="#contact">预约试驾</a></li>
+      </ul>
+      <a class="btn btn-primary" href="#contact">预约试驾</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <p class="eyebrow">2026 款 · 纯电轿跑</p>
+      <h1>星耀 <em>L7</em><br>静默，却势不可挡</h1>
+      <p class="lead">0.21Cd 超低风阻车身、800V 高压平台与双腔空气悬架，把纯电的静谧与跑车的响应放进同一台车。</p>
+      <div class="price">
+        <b>¥268,000</b>
+        <small>起 · 含基础辅助驾驶套件</small>
+      </div>
+      <div class="cta">
+        <a class="btn btn-primary" href="#contact">立即预约</a>
+        <a class="btn btn-ghost" href="#specs">查看参数</a>
+      </div>
+
+      <div class="swatches" id="swatches">
+        <p>车身颜色</p>
+        <button class="swatch" style="background:#c8102e" data-name="烈焰红" data-color="#c8102e" data-shade="#8f0b20" aria-pressed="true" aria-label="烈焰红"></button>
+        <button class="swatch" style="background:#1f4fd8" data-name="星海蓝" data-color="#1f4fd8" data-shade="#15347f" aria-pressed="false" aria-label="星海蓝"></button>
+        <button class="swatch" style="background:#2f3438" data-name="曜石灰" data-color="#2f3438" data-shade="#1b1f22" aria-pressed="false" aria-label="曜石灰"></button>
+        <button class="swatch" style="background:#e8eaee" data-name="珠光白" data-color="#e8eaee" data-shade="#b9bec7" aria-pressed="false" aria-label="珠光白"></button>
+      </div>
+    </div>
+
+    <div class="stage">
+      <svg class="car" viewBox="0 0 860 360" role="img" aria-label="星耀 L7 车身侧视图">
+        <ellipse class="car-shadow" cx="430" cy="304" rx="330" ry="26"/>
+        <!-- 车顶与座舱 -->
+        <path class="car-body stance" d="M246 178c34-52 96-78 168-80h96c74 2 130 28 166 80z"/>
+        <path class="glass" d="M300 172c28-40 76-58 130-60h60c46 2 82 20 110 60z"/>
+        <!-- 车身主体 -->
+        <path class="car-body stance" d="M96 286c-16 0-28-12-28-28v-32c0-20 14-34 34-38l150-24 30 22h412l92 34c22 8 34 24 34 44v22c0 12-10 20-22 20H96z"/>
+        <!-- 側面特征线 -->
+        <path d="M170 232h520" stroke="rgba(0,0,0,.28)" stroke-width="4" stroke-linecap="round" fill="none"/>
+        <!-- 灯组 -->
+        <rect class="light" x="796" y="210" width="34" height="14" rx="7"/>
+        <rect class="lamp" x="66" y="212" width="40" height="12" rx="6"/>
+        <!-- 车轮 -->
+        <g>
+          <circle class="tire" cx="232" cy="286" r="54"/>
+          <circle class="rim" cx="232" cy="286" r="28"/>
+          <circle fill="#8f95a6" cx="232" cy="286" r="10"/>
+        </g>
+        <g>
+          <circle class="tire" cx="676" cy="286" r="54"/>
+          <circle class="rim" cx="676" cy="286" r="28"/>
+          <circle fill="#8f95a6" cx="676" cy="286" r="10"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<section id="highlights">
+  <div class="wrap">
+    <div class="head">
+      <h2>为长途与日常一起设计</h2>
+      <p>每一项配置都在回答同一个问题：如何让驾驶更轻松。</p>
+    </div>
+    <div class="cards">
+      <article class="card">
+        <div class="icon">⚡</div>
+        <h3>800V 高压快充</h3>
+        <p>充电 10 分钟，补能 300 公里，服务区一杯咖啡的时间即可继续出发。</p>
+      </article>
+      <article class="card">
+        <div class="icon">🛣️</div>
+        <h3>智能领航辅助</h3>
+        <p>高速与城区 NOA 覆盖，支持自动变道、匝道通行与记忆泊车。</p>
+      </article>
+      <article class="card">
+        <div class="icon">🌀</div>
+        <h3>双腔空气悬架</h3>
+        <p>毫秒级阻尼调节，颠簸路面滤震，弯道中依然保持稳健姿态。</p>
+      </article>
+      <article class="card">
+        <div class="icon">🎧</div>
+        <h3>静谧座舱</h3>
+        <p>双层夹胶玻璃与主动降噪，120km/h 时速下车内交谈无需抬高音量。</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="specs">
+  <div class="wrap">
+    <div class="head">
+      <h2>性能参数</h2>
+      <p>后驱长续航 / 双电机性能版两种动力可选。</p>
+    </div>
+    <dl class="specs">
+      <div class="spec"><dt>CLTC 续航</dt><dd>720<span>km</span></dd></div>
+      <div class="spec"><dt>零百加速</dt><dd>3.9<span>s</span></dd></div>
+      <div class="spec"><dt>最大功率</dt><dd>425<span>kW</span></dd></div>
+      <div class="spec"><dt>峰值扭矩</dt><dd>720<span>N·m</span></dd></div>
+      <div class="spec"><dt>风阻系数</dt><dd>0.21<span>Cd</span></dd></div>
+      <div class="spec"><dt>快充功率</dt><dd>350<span>kW</span></dd></div>
+    </dl>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap closing">
+    <h2>开启你的第一次试驾</h2>
+    <p>填写信息，我们将在 24 小时内联系你安排到店体验。</p>
+    <a class="btn btn-primary" href="mailto:sales@example.com?subject=预约试驾：星耀 L7">预约试驾</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;">
+    <span>© 2026 星耀汽车 · 本页面为演示用示例内容</span>
+    <span>参数为示例数据，仅供参考</span>
+  </div>
+</footer>
+
+<script>
+  const root = document.documentElement;
+  const swatches = document.querySelectorAll('.swatch');
+
+  swatches.forEach((swatch) => {
+    swatch.addEventListener('click', () => {
+      root.style.setProperty('--car-color', swatch.dataset.color);
+      root.style.setProperty('--car-shade', swatch.dataset.shade);
+      swatches.forEach((s) => s.setAttribute('aria-pressed', String(s === swatch)));
+    });
+  });
+</script>
+</body>
+</html>
